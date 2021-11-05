@@ -1,0 +1,17 @@
+
+
+
+{{!-- add html for what the homepage will look like --}}
+
+*homepage- active link: redirects to homepage endpoint
+    *{{#if}} html to display
+    navbar
+        button a href: dashboard
+        button a href: login/sign up (if not logged in)
+        button a href: logout (if logged in)
+        text: {{user.name}}
+    body
+        *existing blog posts- active link: when clicked redirect to :id endpoint
+            *title
+            *date created
+    {{/if}}

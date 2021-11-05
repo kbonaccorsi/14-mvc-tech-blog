@@ -13,10 +13,14 @@
     "mysql2": "^2.3.3-rc.0",
     "sequelize": "^6.9.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^8.1.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "seed": "node seeds/seed.js",
+    "lint": "npx eslint **/*.js"
   },
   "repository": {
     "type": "git",

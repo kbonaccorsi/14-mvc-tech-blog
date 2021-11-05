@@ -1,0 +1,16 @@
+
+
+{{!-- add html for what dashboard will look like --}}
+
+*dashboard- active link: 
+    *if logged in redirect to dashboard endpoint
+    *else redirect to login endpoint
+        *{{#if}} html to display
+        navbar
+            button a href: homepage
+            button a href: logout (if logged in)
+            text: {{user.name}}
+        body
+            button a href: add new post
+            previous posts from self
+        {{/if}}
