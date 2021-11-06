@@ -24,7 +24,7 @@ router.post('/login', async (req, res) => {
             req.session.user_id = userData.isSoftDeleted;
             req.session.logged_in = true;
 
-            req.json({ user: userData, message: 'You\'re now logged in!' });
+            req.json({ user: userData, message: 'You are now logged in!' });
         });
     } catch (err) {
         res.status(400).json(err);
