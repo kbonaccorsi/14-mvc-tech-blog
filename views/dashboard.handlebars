@@ -1,16 +1,42 @@
+<div class="row">
+    <div class="col-auto">
+        <h2>Welcome, {{user_name}}!</h2>
+    </div>
+</div>
 
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h3>Create a New Post:</h3>
 
-{{!-- add html for what dashboard will look like --}}
+        <form class="form new-post-form">
+            <div class="form-group">
+                <label for="post-name">post name:</label>
+                <input class="form-input" type="text" id="post-name" name="post-name" />
+            </div>
+            <div class="form-group">
+                <label for="post-content">Content:</label>
+                <textarea class="form-input" id="post-content" name="post-content"></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-dark">Create</button>
+            </div>
+        </form>
+    </div>
+    {{#if posts.length}}
+    <div class="col-md-6 post-list">
+        <h3>Previous Posts:</h3>
 
-*dashboard- active link: 
-    *if logged in redirect to dashboard endpoint
-    *else redirect to login endpoint
-        *{{#if}} html to display
-        navbar
-            button a href: homepage
-            button a href: logout (if logged in)
-            text: {{user.user_name}}
-        body
-            button a href: add new post
-            previous posts from self
-        {{/if}}
+        {{#each posts as |post|}}
+        <div class="row mb-2">
+            <div class="col-md-8">
+                <h4><a href="/post/{{post.id}}">{{post.title}}</a></h4>
+            </div>
+            <div class="col-md-4">
+            <button class="btn btn-sm btn-danger" data-id="{{post.id}}">DELETE</button>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    {{/if}}
+</div>
+<script src="./js/post.js"></script>
