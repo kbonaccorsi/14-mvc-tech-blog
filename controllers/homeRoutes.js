@@ -6,7 +6,7 @@ const withAuth = require('../utils/auth');
 router.get('/', async (req, res) => {
     try {
         const postData = await Post.findAll({
-            include = [
+            include =[
                 {
                     model: User,
                     attributes: ['user_name'],
@@ -62,7 +62,7 @@ router.get('/profile', withAuth, async (req, res) => {
             ...user,
             logged_in: true
         });
-    } catch(err) {
+    } catch (err) {
         res.status(500).json(err);
     }
 });
