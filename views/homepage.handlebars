@@ -3,12 +3,11 @@
 {{#each posts as |post| }}
 <div class="row m-5 post justify-content-center">
     <h2 class=" heading">
-        <a href="/post/2">{{post.title}}</a>
+        <a href="/post/{{post.id}}">{{post.title}}</a>
     </h2>
     <p>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quibusdam beatae temporibus, officia autem et facere
-        fugiat quisquam ipsa similique nam fuga non consectetur modi incidunt ipsam tenetur a, eligendi cumque!
+        {{post.content}}
     </p>
-    <p> - Created by me</p>
+    <p> - Created by {{post.user.username}}</p>
 </div>
 {{/each}}
