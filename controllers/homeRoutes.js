@@ -5,20 +5,23 @@ const withAuth = require('../utils/auth');
 //display all posts on the homepage
 router.get('/', async (req, res) => {
     try {
-        const postData = await Post.findAll({
-            include =[
+        //get all posts and JOIN with user data
+        const dbPostData = await Post.findAll({
+            include: [
                 {
                     model: User,
-                    attributes: ['user_name'],
+                    attributes: { exclude: ['password'] },
                 },
             ],
         });
-
-        const posts = postData.map((post) => post.get({ plain: true }));
-
+        //serialize data so the template can read it
+        const posts = dbPostData.map((post) => {
+            post.get({ plain: true })
+        });
+        //pass serialized data and session information into template
         res.render('homepage', {
             posts,
-            logged_in: req.session.logged_in
+            loggedIn: req.session.loggedIn,
         });
     } catch (err) {
         res.status(500).json(err);
@@ -28,39 +31,39 @@ router.get('/', async (req, res) => {
 //find a post with a specific id
 router.get('/post/:id', async (req, res) => {
     try {
-        const postData = await Post.findByPk(req.params.id, {
+        const dbPostData = await Post.findByPk(req.params.id, {
             include: [
                 {
                     model: User,
-                    attributes: ['user_name'],
+                    attributes: ['username'],
                 },
             ],
         });
 
-        const post = postData.get({ plain: true });
+        const post = dbPostData.get({ plain: true });
 
         res.render('post', {
             ...post,
-            logged_in: req.session.logged_in
+            loggedIn: req.session.loggedIn
         });
     } catch (err) {
         res.status(500).json(err);
     }
 });
 
-//Get profile using login information
-router.get('/profile', withAuth, async (req, res) => {
+//Get dashboard only after logging in
+router.get('/dashboard', withAuth, async (req, res) => {
     try {
-        const userData = await User.findByPk(req.session.user_id, {
+        const dbUserData = await User.findByPk(req.session.user_id, {
             attributes: { exclude: ['password'] },
             include: [{ model: Post }],
         });
 
-        const user = userData.get({ plain: true });
+        const user = dbUserData.get({ plain: true });
 
-        res.render('profile', {
+        res.render('dashboard', {
             ...user,
-            logged_in: true
+            loggedIn: true
         });
     } catch (err) {
         res.status(500).json(err);
@@ -69,8 +72,8 @@ router.get('/profile', withAuth, async (req, res) => {
 
 //If already logged in, redirect to another route
 router.get('/login', (req, res) => {
-    if (req.session.logged_in) {
-        res.redirect('/');
+    if (req.session.loggedIn) {
+        res.redirect('/dashboard');
         return;
     }
 

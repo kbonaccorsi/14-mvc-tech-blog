@@ -1,8 +1,8 @@
-<!-- html for dashboard -->
+<!-- html for dashboard: goes with dashboard.js-->
 
 <div class="row">
     <div class="col-auto">
-        <h2>Welcome, {{user_name}}!</h2>
+        <h2>Welcome, {{username}}!</h2>
     </div>
 </div>
 
@@ -12,8 +12,8 @@
 
         <form class="form new-post-form">
             <div class="form-group">
-                <label for="post-name">post name:</label>
-                <input class="form-input" type="text" id="post-name" name="post-name" />
+                <label for="post-title">post title:</label>
+                <input class="form-input" type="text" id="post-title" name="post-title" />
             </div>
             <div class="form-group">
                 <label for="post-content">Content:</label>
@@ -24,6 +24,7 @@
             </div>
         </form>
     </div>
+{{!-- If there are any posts, each post needs a delete button --}}
     {{#if posts.length}}
     <div class="col-md-6 post-list">
         <h3>Previous Posts:</h3>
@@ -34,7 +35,7 @@
                 <h4><a href="/post/{{post.id}}">{{post.title}}</a></h4>
             </div>
             <div class="col-md-4">
-            <button class="btn btn-sm btn-danger" data-id="{{post.id}}">DELETE</button>
+                <button class="btn btn-sm btn-danger" data-id="{{post.id}}">DELETE</button>
             </div>
         </div>
         {{/each}}

@@ -1,3 +1,4 @@
+//this helps keep private information secure
 const Sequelize = require('sequelize');
 require('dotenv').config();
 
