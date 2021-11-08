@@ -3,11 +3,11 @@
 {{#each posts as |post| }}
 <div class="row m-5 post justify-content-center">
     <h2 class=" heading">
-        <a href="/post/{{post.id}}">Post Title</a>
+        <a href="/post/{{id}}">{{title}}</a>
     </h2>
     <p>
-        {{post.content}}
+        {{content}}
     </p>
-    <p> - Created by username</p>
+    <p> - Created by {{user.username}} on {{format_date created}}</p>
 </div>
 {{/each}}
