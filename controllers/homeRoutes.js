@@ -1,42 +1,16 @@
 const router = require('express').Router();
-const { Post, User, Comment } = require('../models');
-const sequelize = require('../config/connection');
+const { Post, User } = require('../models');
+const withAuth = require('../utils/auth');
 
 //display all posts on the homepage
 router.get('/', async (req, res) => {
     try {
-        //get all posts and include user/comment data
+        //get all posts and JOIN with user data
         const dbPostData = await Post.findAll({
-            attributes: [
-                'id',
-                'title',
-                'content',
-                'created'
-            ],
             include: [
                 {
                     model: User,
-                    attributes: [
-                        'id',
-                        'username'
-                    ]
-                },
-                {
-                    model: Comment,
-                    attributes: [
-                        'id',
-                        'content',
-                        'created',
-                        'post_id',
-                        'user_id'
-                    ],
-                    include: {
-                        model: User,
-                        attributes: [
-                            'id',
-                            'username'
-                        ],
-                    },
+                    attributes: { exclude: ['password'] },
                 },
             ],
         });
@@ -54,6 +28,48 @@ router.get('/', async (req, res) => {
     }
 });
 
+//find a post with a specific id
+router.get('/post/:id', async (req, res) => {
+    try {
+        const dbPostData = await Post.findByPk(req.params.id, {
+            include: [
+                {
+                    model: User,
+                    attributes: ['username'],
+                },
+            ],
+        });
+
+        const post = dbPostData.get({ plain: true });
+
+        res.render('post', {
+            ...post,
+            loggedIn: req.session.loggedIn
+        });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+//Get dashboard only after logging in
+router.get('/dashboard', withAuth, async (req, res) => {
+    try {
+        const dbUserData = await User.findByPk(req.session.user_id, {
+            attributes: { exclude: ['password'] },
+            include: [{ model: Post }],
+        });
+
+        const user = dbUserData.get({ plain: true });
+
+        res.render('dashboard', {
+            ...user,
+            loggedIn: true
+        });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
 //If already logged in, redirect to another route
 router.get('/login', (req, res) => {
     if (req.session.loggedIn) {
@@ -62,59 +78,6 @@ router.get('/login', (req, res) => {
     }
 
     res.render('login');
-});
-
-//find a post with a specific id, and display it with user/comment data
-router.get('/post/:id', async (req, res) => {
-    try {
-        const dbPostData = await Post.findByPk(req.params.id, {
-            attributes: [
-                'id',
-                'title',
-                'content',
-                'created'
-            ],
-            include: [
-                {
-                    model: User,
-                    attributes: [
-                        'id',
-                        'username'
-                    ],
-                },
-                {
-                    model: Comment,
-                    attributes: [
-                        'id',
-                        'content',
-                        'created',
-                        'post_id',
-                        'user_id'
-                    ],
-                    include: {
-                        model: User,
-                        attributes: [
-                            'id',
-                            'username'
-                        ],
-                    },
-                },
-            ],
-        });
-        //if there's no post with that id
-        if(!dbPostData) {
-            res.status(404).json({ message: 'No post found with this id'});
-            return;
-        }
-        //serialize data so the template can read it
-        const post = dbPostData.get({ plain: true })
-        res.render('post', {
-            post,
-            loggedIn: req.session.loggedIn,
-        });
-    } catch (err) {
-        res.status(500).json(err);
-    }
 });
 
 module.exports = router;
