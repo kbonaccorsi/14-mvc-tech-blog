@@ -23,7 +23,7 @@
             <nav class="navbar navbar-light bg-info">
                 <div class="container-fluid">
                     <a class="navbar-brand text-center m-0" href="/">Homepage</a>
-                    <a class="navbar-brand text-center m-0" href="/dashboard">Dashboard</a>
+                    <a class="navbar-brand text-center m-0" href="/dashboard">Dashboard</a> 
                     {{!-- if logged in display logout button otherwise display login/signup button --}}
                     {{#if loggedIn}}
                     <button class="no-button" id="logout">Logout</button>
@@ -34,12 +34,9 @@
             </nav>
         </header>
         {{!-- content area --}}
-        <div class="row vh-100 d-flex align-items-center justify-content-center bg-secondary">
+        <main class="row vh-100 d-flex align-items-center justify-content-center bg-secondary">
             {{{body}}}
-        </div>
-        <footer>
-
-        </footer>
+        </main>
     </div>
 
     {{!-- logged in users only --}}

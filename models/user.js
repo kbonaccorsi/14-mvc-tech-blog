@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const sequelize = require('../config/connection');
 
 class User extends Model {
+    //check user input against hashed password to verify user
     checkPassword(loginPassword) {
         return bcrypt.compareSync(loginPassword, this.password);
     }
@@ -10,6 +11,7 @@ class User extends Model {
 
 User.init(
     {
+        //fields
         id: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -31,16 +33,20 @@ User.init(
         },
     },
     {
+        //hooks
         hooks: {
+            //before creating a new user
             beforeCreate: async (newUserData) => {
                 newUserData.password = await bcrypt.hash(newUserData.password, 10);
                 return newUserData;
             },
+            //before updating a user
             beforeUpdate: async (updatedUserData) => {
                 updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
                 return updatedUserData;
             },
         },
+        //options
         sequelize,
         timestamps: false,
         freezeTableName: true,
