@@ -14,13 +14,18 @@ router.get('/', async (req, res) => {
                 },
             ],
         });
+
         //serialize data so the template can read it
-        const posts = dbPostData.map((post) => {
-            post.get({ plain: true })
-        });
+//         const posts = await dbPostData.map((post) => {
+//             post.get({ plain: true })
+//             //console.log(post)
+//             tests.push(post)
+//         });
+// console.log(dbPostData)
         //pass serialized data and session information into template
         res.render('homepage', {
-            posts,
+            layout:"main",
+            dbPostData,
             loggedIn: req.session.loggedIn,
         });
     } catch (err) {
