@@ -38,7 +38,7 @@ router.post('/login', async (req, res) => {
         }
 
         //verify the posted password with the password stored in the database
-        const validPassword = dbUserData.checkPassword(req.body.password);
+        const validPassword = await dbUserData.checkPassword(req.body.password);
 
         //if input password doesn't match hashed password error 400
         if (!validPassword) {

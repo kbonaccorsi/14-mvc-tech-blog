@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { Post, User } = require('../models');
+const withAuth =require('../utils/auth');
 
 //display all posts on the homepage
 router.get('/', async (req, res) => {
@@ -14,9 +15,7 @@ router.get('/', async (req, res) => {
             ],
         });
 
-        const posts = await dbPostData.map((post) => {
-            post.get({ plain: true })
-        });
+        const posts = dbPostData.map((post) => post.get({ plain: true }));
         //pass data and session information into template
         res.render('homepage', {
             layout: "main",
@@ -51,10 +50,27 @@ router.get('/post/:id', async (req, res) => {
 }
 });
 
+router.get('/dashboard', withAuth, async (req, res) => {
+    try {
+        const dbUserData = await User.findByPk(req.session.user_id, {
+            attributes: { exclude: ['password'] },
+            include: [{ model: Post }],
+        });
+        const user = dbUserData.get({ plain: true });
+
+        res.render('dashboard', {
+            ...user,
+            loggedIn: true
+        });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
 //If already logged in, redirect to another route
 router.get('/login', (req, res) => {
     if (req.session.loggedIn) {
-        res.redirect('/');
+        res.redirect('/dashboard');
         return;
     }
 
