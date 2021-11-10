@@ -51,5 +51,17 @@ router.get('/post/:id', async (req, res) => {
 }
 });
 
+//If already logged in, redirect to another route
+router.get('/login', (req, res) => {
+    if (req.session.loggedIn) {
+        res.redirect('/');
+        return;
+    }
+
+    res.render('login');
+});
+
+
+
 
 module.exports = router;

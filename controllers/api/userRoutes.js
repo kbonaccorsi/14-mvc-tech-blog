@@ -1,6 +1,26 @@
 const router = require('express').Router();
 const { User } = require('../../models');
 
+//create new user
+router.post('/', async (req, res) => {
+    try {
+        const newUser = await User.create({
+            username: req.body.username,
+            password: req.body.password
+        });
+
+        req.session.save(() => {
+            req.session.user_id = newUser.id;
+            req.session.username = newUser.username;
+            req.session.loggedIn = true;
+
+            res.json(newUser);
+        });
+    } catch (err) {
+        res.status(400).json(err);
+    }
+});
+
 //login
 router.post('/login', async (req, res) => {
     try {
@@ -18,7 +38,7 @@ router.post('/login', async (req, res) => {
         }
 
         //verify the posted password with the password stored in the database
-        const validPassword = await dbUserData.checkPassword(req.body.password);
+        const validPassword = dbUserData.checkPassword(req.body.password);
 
         //if input password doesn't match hashed password error 400
         if (!validPassword) {
@@ -39,16 +59,16 @@ router.post('/login', async (req, res) => {
     }
 });
 
-
-
-//If already logged in, redirect to another route
-router.get('/login', (req, res) => {
+//logout
+router.post('/logout', (req, res) => {
+    //When user logs out, destroy the session
     if (req.session.loggedIn) {
-        res.redirect('/dashboard');
-        return;
+        req.session.destroy(() => {
+            res.status(204).end();
+        });
+    } else {
+        res.status(404).end();
     }
-
-    res.render('login');
 });
 
 module.exports = router;

@@ -3,7 +3,7 @@ const { Post, User } = require('../models');
 const withAuth = require('../utils/auth');
 
 //Get dashboard only after logging in
-router.get('/dashboard', withAuth, async (req, res) => {
+router.get('/', withAuth, async (req, res) => {
     try {
         const dbPostData = await Post.findAll({
             where: { "user_id": req.session.loggedIn },
@@ -63,20 +63,5 @@ router.post('/login', async (req, res) => {
         res.status(400).json(err);
     }
 });
-
-
-
-//If already logged in, redirect to another route
-router.get('/login', (req, res) => {
-    if (req.session.loggedIn) {
-        res.redirect('/dashboard');
-        return;
-    }
-
-    res.render('login');
-});
-
-
-
 
 module.exports = router;
