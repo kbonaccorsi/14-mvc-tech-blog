@@ -3,11 +3,11 @@
 {{#each dbPostData}}
 <div class="row m-5 post justify-content-center">
     <h2 class=" heading">
-        <a href="/post/2">{{dataValues.title}}</a>
+        <a href="/post/{{dataValues.id}}">{{dataValues.title}}</a>
     </h2>
     <p>
         {{dataValues.content}}
     </p>
-    <p> - Created by {{dataValues.user.username}}</p>
+    <p> - Created by me</p>
 </div>
 {{/each}}

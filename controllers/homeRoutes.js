@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const { Post, User } = require('../models');
-const withAuth = require('../utils/auth');
 
 //display all posts on the homepage
 router.get('/', async (req, res) => {
@@ -15,16 +14,12 @@ router.get('/', async (req, res) => {
             ],
         });
 
-        //serialize data so the template can read it
-//         const posts = await dbPostData.map((post) => {
-//             post.get({ plain: true })
-//             //console.log(post)
-//             tests.push(post)
-//         });
-// console.log(dbPostData)
-        //pass serialized data and session information into template
+        const posts = await dbPostData.map((post) => {
+            post.get({ plain: true })
+        });
+        //pass data and session information into template
         res.render('homepage', {
-            layout:"main",
+            layout: "main",
             dbPostData,
             loggedIn: req.session.loggedIn,
         });
@@ -33,7 +28,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-//find a post with a specific id
+//view a post with a specific id
 router.get('/post/:id', async (req, res) => {
     try {
         const dbPostData = await Post.findByPk(req.params.id, {
@@ -52,37 +47,9 @@ router.get('/post/:id', async (req, res) => {
             loggedIn: req.session.loggedIn
         });
     } catch (err) {
-        res.status(500).json(err);
-    }
+    res.status(500).json(err);
+}
 });
 
-//Get dashboard only after logging in
-router.get('/dashboard', withAuth, async (req, res) => {
-    try {
-        const dbUserData = await User.findByPk(req.session.user_id, {
-            attributes: { exclude: ['password'] },
-            include: [{ model: Post }],
-        });
-
-        const user = dbUserData.get({ plain: true });
-
-        res.render('dashboard', {
-            ...user,
-            loggedIn: true
-        });
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
-
-//If already logged in, redirect to another route
-router.get('/login', (req, res) => {
-    if (req.session.loggedIn) {
-        res.redirect('/dashboard');
-        return;
-    }
-
-    res.render('login');
-});
 
 module.exports = router;
