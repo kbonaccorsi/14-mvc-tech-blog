@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { User } = require('../../models');
+const withAuth =require('../../utils/auth');
 
 //create new user
 router.post('/', async (req, res) => {
@@ -11,7 +12,6 @@ router.post('/', async (req, res) => {
 
         req.session.save(() => {
             req.session.user_id = dbUserData.id;
-            req.session.username = dbUserData.username;
             req.session.loggedIn = true;
 
             res.json(dbUserData);
@@ -49,13 +49,29 @@ router.post('/login', async (req, res) => {
         //Create session variables based on the logged in user
         req.session.save(() => {
             req.session.user_id = dbUserData.id;
-            req.session.username = dbUserData.username;
             req.session.loggedIn = true;
 
             res.json({ user: dbUserData, message: 'You are now logged in!' });
         });
     } catch (err) {
         res.status(400).json(err);
+    }
+});
+
+router.get('/dashboard', withAuth, async (req, res) => {
+    try {
+        const dbUserData = await User.findByPk(req.session.user_id, {
+            attributes: { exclude: ['password'] },
+            include: [{ model: Post }],
+        });
+        const user = dbUserData.get({ plain: true });
+
+        res.render('dashboard', {
+            ...user,
+            loggedIn: true
+        });
+    } catch (err) {
+        res.status(500).json(err);
     }
 });
 
