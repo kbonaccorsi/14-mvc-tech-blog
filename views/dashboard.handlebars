@@ -19,21 +19,21 @@
         </form>
     </div>
 {{!-- If there are any posts, each post needs a delete button --}}
-    {{#if posts.length}}
+    {{#if dbPostData.length}}
     <div class="col-md-6 post-list">
         <h3>Previous Posts:</h3>
 
-        {{#each posts as |post|}}
+        {{#each dbPostData}}
         <div class="row mb-2">
             <div class="col-md-8">
-                <h4><a href="/post/{{post.id}}">{{post.title}}</a></h4>
+                <h4><a href="/post/{{id}}">{{title}}</a></h4>
             </div>
             <div class="col-md-4">
-                <button class="btn delete-btn btn-sm btn-danger" data-id="{{post.id}}">DELETE</button>
+                <button class="btn delete-btn btn-sm btn-danger" data-id="{{id}}">DELETE</button>
             </div>
         </div>
         {{/each}}
     </div>
     {{/if}}
 </div>
-<script src="../models/Post.js "></script>
+<script src="/js/newPost.js "></script>
